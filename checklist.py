@@ -3,25 +3,35 @@ class colors:
     green = '\033[32m'
     yellow = '\033[93m'
     grey = '\033[37m'
+    red='\033[31m'
 
 checklist = list()
 
 # CREATE
 def create(item):
-    checklist.append(item)
+        checklist.append(item)
 
 # READ
 def read(index):
-    print(checklist[index])
-    return checklist[index]
+    if in_scope(index):
+        print(checklist[index])
+        return checklist[index]
+    else:
+        print ("Index out of scope")
 
 # UPDATE
 def update(index, item):
-    checklist[index] = item
+    if in_scope(index):
+        checklist[index] = item
+    else:
+        print("Index out of sccope")
 
 # DESTROY
 def destroy(index):
-    checklist.pop(index)
+    if in_scope(index):
+        checklist.pop(index)
+    else:
+        print("Index out of scope")
 
 # LIST ALL ITEMS
 def list_all_items():
@@ -32,7 +42,17 @@ def list_all_items():
 
 # MARK COMPLETED
 def mark_completed(index):
-    update(index, ' √ ' + checklist[index])
+    if in_scope(index):
+        update(index, ' √ ' + checklist[index])
+    else:
+        print("\nIndex out of scope")
+
+def in_scope(index):
+    try:
+        checklist[int(index)]
+        return True
+    except:
+        return False
 
 # SELECT
 def select(function_code):
@@ -107,6 +127,9 @@ def test():
     select("C") #create test
     select("C")
     select("C") 
+    in_scope(0) #should pass
+    print("in bounds")
+    in_scope(5) #should fail (print out of bounds)
     print("\nRead Test: \n")
     select("R") #read test
     print("\nUpdate Test: \n")
@@ -123,6 +146,7 @@ def test():
 
 def run():
     running = True
+    print(colors.grey)
     while running:
         selection = user_input(
             "\nPress C to create list, R to read, U to update item, D to destroy, M to mark completed, P to print list, and Q to quit  ")
